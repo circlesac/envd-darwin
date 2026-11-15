@@ -9,5 +9,3 @@ go.work.sum
 /packages/fc-kernels
 /packages/fc-versions
 **/bin/
-
-/darwin/dist/
