@@ -1,0 +1,28 @@
+name: Release Darwin envd
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-darwin
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: packages/envd/go.mod
+          cache-dependency-path: |
+            packages/envd/go.sum
+            packages/shared/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: ./darwin/release.sh
+        env:
+          GH_TOKEN: ${{ github.token }}

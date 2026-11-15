@@ -1,0 +1,28 @@
+name: Test Darwin envd
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    name: Darwin envd
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: packages/envd/go.mod
+          cache-dependency-path: |
+            packages/envd/go.sum
+            packages/shared/go.sum
+      - run: GOBIN="$RUNNER_TEMP/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0
+      - run: GOWORK=off "$RUNNER_TEMP/bin/golangci-lint" run --new-from-rev="${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}" ./...
+        working-directory: packages/envd
+      - run: ./darwin/test.sh
