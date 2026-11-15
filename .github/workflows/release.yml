@@ -1,5 +1,7 @@
 name: Release Darwin envd
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
