@@ -12,6 +12,7 @@ on:
 
 jobs:
   detect-changes:
+    if: github.repository == 'e2b-dev/runtime'
     name: Detect changed paths
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -103,28 +104,34 @@ jobs:
           fi
 
   lint:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/lint.yml
     with:
       run-lint: ${{ contains(fromJSON(needs.detect-changes.outputs.changed-scopes), 'lint-inputs') && needs.detect-changes.outputs.docs-only != 'true' }}
   validate-openapi:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/validate-openapi.yml
     with:
       run-validation: ${{ contains(fromJSON(needs.detect-changes.outputs.changed-scopes), 'openapi-inputs') }}
   out-of-order-migrations:
+    if: github.repository == 'e2b-dev/runtime'
     uses: ./.github/workflows/out-of-order-migrations.yml
   unit-tests:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/pr-tests.yml
     with:
       run-tests: ${{ contains(fromJSON(needs.detect-changes.outputs.changed-scopes), 'test-inputs') && needs.detect-changes.outputs.docs-only != 'true' }}
   arm64-tests:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/pr-tests-arm64.yml
     with:
       run-tests: ${{ contains(fromJSON(needs.detect-changes.outputs.changed-scopes), 'test-inputs') && needs.detect-changes.outputs.docs-only != 'true' }}
   integration-tests:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes, out-of-order-migrations]
     uses: ./.github/workflows/integration_tests.yml
     with:
@@ -146,7 +153,7 @@ jobs:
       checks: write
     # Skip on cancellation (e.g. superseded by a newer push) so partial
     # artifacts aren't published as failed tests.
-    if: ${{ !cancelled() && needs.detect-changes.result == 'success' }}
+    if: github.repository == 'e2b-dev/runtime' && (!cancelled() && needs.detect-changes.result == 'success')
 
     steps:
       - name: Skip publishing when tests did not run

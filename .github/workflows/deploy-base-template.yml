@@ -26,6 +26,7 @@ permissions:
 
 jobs:
   build-template:
+    if: github.repository == 'e2b-dev/runtime'
     name: Build E2B template
     runs-on: ubuntu-24.04
     environment: ${{ inputs.target_environment }}

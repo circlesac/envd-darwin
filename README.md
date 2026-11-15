@@ -1,3 +1,7 @@
+# Circles Darwin envd fork
+
+See [darwin/README.md](darwin/README.md) for the maintained scope, builds, releases and upstream sync procedure. The original upstream documentation follows.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/e2b-runtime-dark.png">
   <img alt="E2B Runtime" src="./.github/assets/e2b-runtime-light.png" width="100%">

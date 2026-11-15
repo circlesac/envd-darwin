@@ -10,6 +10,7 @@ on:
 
 jobs:
   detect-changes:
+    if: github.repository == 'e2b-dev/runtime'
     name: Detect changed paths
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -39,11 +40,13 @@ jobs:
               - '.tool-versions'
 
   unit-tests:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/pr-tests.yml
     with:
       run-tests: ${{ contains(fromJSON(needs.detect-changes.outputs.changed-scopes), 'test-inputs') }}
   integration-tests:
+    if: github.repository == 'e2b-dev/runtime'
     needs: [detect-changes]
     uses: ./.github/workflows/integration_tests.yml
     with:
@@ -59,7 +62,7 @@ jobs:
     permissions:
       checks: write
     # Skip on cancellation so partial artifacts aren't published as failed tests.
-    if: ${{ !cancelled() && needs.detect-changes.result == 'success' }}
+    if: github.repository == 'e2b-dev/runtime' && (!cancelled() && needs.detect-changes.result == 'success')
 
     steps:
       - name: Skip publishing when tests did not run

@@ -35,6 +35,7 @@ concurrency:
 
 jobs:
   publish:
+    if: github.repository == 'e2b-dev/runtime'
     name: Publish nixos:${{ inputs.tag }}
     # Hosted runner is enough: nix runs inside the nixos/nix container and
     # nothing here boots a VM, so no KVM and no self-hosted pool needed.

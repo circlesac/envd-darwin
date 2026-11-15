@@ -36,11 +36,11 @@ func Define(name string, run func(args []string) error) Command {
 	return Command{name: name}
 }
 
-// Exec is the command that runs the helper in a child process with args. It execs
-// /proc/self/exe, which names this binary even after a live upgrade unlinked the file it
-// was started from.
+// Exec is the command that runs the helper in a child process with args. The
+// platform-specific executable path keeps Linux live-upgrade behavior while
+// allowing Darwin guests, which do not provide /proc/self/exe.
 func (c Command) Exec(args ...string) *exec.Cmd {
-	cmd := exec.Command("/proc/self/exe", append([]string{c.name}, args...)...) //nolint:noctx // the caller owns the child through Wait; a context would only add a SIGKILL, which a helper blocked in the kernel ignores
+	cmd := exec.Command(currentExecutable(), append([]string{c.name}, args...)...) //nolint:noctx // the caller owns the child through Wait; a context would only add a SIGKILL, which a helper blocked in the kernel ignores
 	cmd.Env = append(os.Environ(), helperEnv+"="+c.name)
 
 	return cmd

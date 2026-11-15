@@ -31,6 +31,7 @@ env:
 
 jobs:
   bump:
+    if: github.repository == 'e2b-dev/runtime'
     name: Propose a nixpkgs pin bump
     runs-on: ubuntu-24.04
     timeout-minutes: 15
