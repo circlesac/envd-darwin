@@ -16,7 +16,7 @@ The test script runs native race tests and vet on macOS and compile checks on Li
 
 ## Release and consume
 
-Dispatch `.github/workflows/release.yml` from `main`, or run `./darwin/release.sh` from a clean, current `main` with Go, Node and authenticated `gh`. It runs the same checks, computes CalVer using `@circlesac/oneup`, and publishes two archives plus matching `.tar.gz.sha256` files to this repository's GitHub Releases. Release scripts create tags only after successful builds. Each archive contains `envd` and the Apache-2.0 license.
+Every push to `main` automatically runs `.github/workflows/release.yml`. You can also dispatch it manually from `main`, or run `./darwin/release.sh` from a clean, current `main` with Go, Node and authenticated `gh`. Release runs are serialized so version calculation and publication do not overlap. It runs the same checks, computes CalVer using `@circlesac/oneup`, and publishes two archives plus matching `.tar.gz.sha256` files to this repository's GitHub Releases. Release scripts create tags only after successful builds. Each archive contains `envd` and the Apache-2.0 license.
 
 The release CalVer is independent of the upstream envd protocol version in `packages/envd/pkg/version.go`; do not overwrite that protocol version with CalVer. `circlesac/sandbox` owns the Tart installer and pins a release tag. A release becomes the supported sandbox dependency only after its Tart E2B suite passes.
 
