@@ -1,6 +1,6 @@
 # Darwin envd
 
-This repository is the `circlesac/envd-darwin` fork of [e2b-dev/runtime](https://github.com/e2b-dev/runtime). Circles maintains and releases only the macOS envd agent. The remaining upstream tree and history are retained to make upstream merges reviewable. Upstream deployment workflows are restricted to the upstream repository.
+This repository is the `circlesac/envd-darwin` fork of [e2b-dev/runtime](https://github.com/e2b-dev/runtime). Circles maintains and releases only the macOS envd agent. The remaining upstream tree and history are retained to make upstream merges reviewable. Only `test.yml` and `release.yml` are retained; upstream infrastructure workflows are removed.
 
 ## Build and verify
 
@@ -12,7 +12,7 @@ GOARCH=arm64 ./darwin/build.sh
 GOARCH=amd64 ./darwin/build.sh
 ```
 
-The test script runs native race tests and vet on macOS and compile checks on Linux, then builds both Darwin architectures. `GOWORK=off` bounds dependencies to envd and its shared module. The format check uses gofmt; lint uses go vet and upstream golangci-lint v2.15.0 (rebuilt with this repository’s Go toolchain). The existing `pull-request.yml` and `push-main.yml` workflows run the Darwin checks. PR lint checks changes against `origin/main`; main lint checks the latest commit against its parent.
+The test script runs native race tests and vet on macOS and compile checks on Linux, then builds both Darwin architectures. `GOWORK=off` bounds dependencies to envd and its shared module. The format check uses gofmt; lint uses go vet and upstream golangci-lint v2.15.0 (rebuilt with this repository’s Go toolchain). `test.yml` runs the Darwin checks on pull requests and main pushes. Lint compares against the PR base or the previous main head.
 
 ## Release and consume
 
@@ -32,7 +32,7 @@ git merge upstream/main
 ./darwin/test.sh
 ```
 
-Review the upstream delta and resolve platform conflicts in a PR; do not replace the fork with an exported subtree. Check that upstream workflow guards still prevent infrastructure jobs in this fork. After CI, release and run the consuming sandbox Tart suite before updating its pin. The small maintained platform delta is:
+Review the upstream delta and resolve platform conflicts in a PR; do not replace the fork with an exported subtree. Keep only the fork’s `test.yml` and `release.yml` when resolving upstream workflow changes. After CI, release and run the consuming sandbox Tart suite before updating its pin. The small maintained platform delta is:
 
 - Re-exec via `os.Executable()` on macOS, `/proc/self/exe` on Linux.
 - Runtime, CPU and handover files under `/tmp/e2b` on macOS.

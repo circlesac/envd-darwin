@@ -227,9 +227,9 @@ go test -race -v -run TestCreateSandbox ./internal/handlers
 - Profiling: API exposes pprof on `/debug/pprof/` (see `packages/api/Makefile` profiler target)
 
 ### CI/CD Workflows
-- `.github/workflows/pull-request.yml` - PR orchestrator (lint, OpenAPI, unit, arm64, integration)
-- `.github/workflows/pr-tests.yml` - Unit test shards
-- `.github/workflows/integration_tests.yml` - Integration test suite
+- `.github/workflows/test.yml` - Darwin envd checks, native tests and both macOS builds on PRs and main
+- `.github/workflows/release.yml` - Manual macOS envd release from main
+- Upstream infrastructure workflows are not retained in this fork.
 
 ## Architecture Patterns
 
