@@ -12,7 +12,7 @@ GOARCH=arm64 ./darwin/build.sh
 GOARCH=amd64 ./darwin/build.sh
 ```
 
-The test script runs native race tests and vet on macOS and compile checks on Linux, then builds both Darwin architectures. `GOWORK=off` bounds dependencies to envd and its shared module. The format check uses gofmt; lint uses go vet and upstream golangci-lint v2.15.0 (rebuilt with this repository’s Go toolchain). CI checks newly introduced golangci-lint findings against `origin/main`.
+The test script runs native race tests and vet on macOS and compile checks on Linux, then builds both Darwin architectures. `GOWORK=off` bounds dependencies to envd and its shared module. The format check uses gofmt; lint uses go vet and upstream golangci-lint v2.15.0 (rebuilt with this repository’s Go toolchain). The existing `pull-request.yml` and `push-main.yml` workflows run the Darwin checks. PR lint checks changes against `origin/main`; main lint checks the latest commit against its parent.
 
 ## Release and consume
 
