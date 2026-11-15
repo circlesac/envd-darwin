@@ -1577,7 +1577,3 @@ Cross-service contracts are all generated: OpenAPI specs in `spec/`, gRPC protos
 `packages/orchestrator/*.proto`, `packages/scheduling-api/e2b/` and `packages/envd/spec/`, SQL in `packages/db/queries/`
 and `packages/scheduling-api/internal/db/queries/sql/`.
 Run `make generate` after changing any of them.
-
-## Circles Darwin fork
-
-This fork additionally builds envd for macOS guests. `darwin/` owns its build and GitHub Release scripts; `circlesac/sandbox` consumes a pinned release and installs a login LaunchAgent on port 49983 in Tart base VMs. No upstream control-plane infrastructure is deployed by this fork. See [Darwin maintenance](../darwin/README.md).

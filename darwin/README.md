@@ -20,6 +20,18 @@ Dispatch `.github/workflows/release.yml` from `main`, or run `./darwin/release.s
 
 The release CalVer is independent of the upstream envd protocol version in `packages/envd/pkg/version.go`; do not overwrite that protocol version with CalVer. `circlesac/sandbox` owns the Tart installer and pins a release tag. A release becomes the supported sandbox dependency only after its Tart E2B suite passes.
 
+## Tart guest setup
+
+Keep upstream's `/run/e2b` paths. In the dedicated Tart base guest, create a synthetic `/run` link to `/private/tmp` once, then reboot the guest:
+
+```sh
+sudo mkdir -p /etc/synthetic.d
+printf 'run\tprivate/tmp\n' | sudo tee /etc/synthetic.d/envd
+sudo reboot
+```
+
+Before adding the entry, check `/etc/synthetic.conf` and `/etc/synthetic.d/` for an existing `run` definition; reuse a compatible writable path instead of adding a duplicate. After reboot, verify `readlink /run` returns `private/tmp` and, as the envd login user, run `mkdir -p /run/e2b && test -w /run/e2b`. This is guest setup only; do not modify the host. `/run/e2b` then resolves to `/private/tmp/e2b` without platform-specific Go paths. The sandbox installer checks this prerequisite before replacing the daemon.
+
 ## Upstream maintenance
 
 The initial Darwin patch was extracted from sandbox's vendored baseline `f2233c5e3f39e6b2be9d158138df898ea561ecf` and applied to upstream `c7bbb196b` without replacing newer upstream dependencies or tests.
@@ -35,7 +47,6 @@ git merge upstream/main
 Review the upstream delta and resolve platform conflicts in a PR; do not replace the fork with an exported subtree. Keep only the fork’s `test.yml` and `release.yml` when resolving upstream workflow changes. After CI, release and run the consuming sandbox Tart suite before updating its pin. The small maintained platform delta is:
 
 - Re-exec via `os.Executable()` on macOS, `/proc/self/exe` on Linux.
-- Runtime, CPU and handover files under `/tmp/e2b` on macOS.
 - Direct Darwin process spawning without the Linux `/proc` priority wrapper; inherit credentials for the current login user.
 
 macOS guests use a login LaunchAgent with the same envd port (49983) and protocol. No control-plane or Linux infrastructure is deployed by this fork.
