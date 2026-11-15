@@ -9,7 +9,9 @@ git fetch origin main --tags
 "$ROOT/darwin/test.sh"
 mkdir -p darwin/dist/version
 printf '{"name":"@circlesac/envd-darwin"}\n' > darwin/dist/version/package.json
-VERSION=$(npx --yes @circlesac/oneup version --source git --target darwin/dist/version/package.json | tail -1)
+version_output=$(npx --yes @circlesac/oneup version --source git --target darwin/dist/version/package.json)
+VERSION=$(printf '%s\n' "$version_output" | tail -1)
+printf '%s\n' "$VERSION" | grep -Eq '^[0-9]{2}\.[0-9]{1,2}\.[0-9]+$' || { echo 'Invalid release version' >&2; exit 1; }
 for arch in arm64 amd64; do
     mkdir -p "darwin/dist/$arch"
     cp "darwin/dist/envd-darwin-$arch" "darwin/dist/$arch/envd"
